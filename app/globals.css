@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/*
+  Alux.kz — графит + золото (как в логотипе), тёплый светлый фон.
+  Мотив — тонкие «импосты»: линии алюминиевого профиля, делящие стекло.
+*/
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-unbounded), var(--font-manrope), ui-sans-serif, sans-serif;
+
+  --color-ink-950: #0e0f11;
+  --color-ink-900: #16181b;
+  --color-ink-800: #1f2226;
+  --color-ink-700: #2b2f35;
+  --color-ink-500: #5d636c;
+  --color-ink-400: #868c95;
+  --color-ink-300: #b3b8bf;
+
+  --color-paper: #f4f2ee;
+  --color-paper-2: #ebe7e0;
+  --color-paper-3: #ddd7cc;
+
+  --color-gold-300: #f0cf87;
+  --color-gold-400: #e5b85c;
+  --color-gold-500: #d9a441;
+  --color-gold-600: #b8862b;
+  --color-gold-700: #8f6720;
+
+  --color-success: #3f9d6b;
+  --color-danger: #d4543f;
+
+  --radius-card: 1.25rem;
+
+  --animate-reveal: reveal 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-draw: draw 1.6s cubic-bezier(0.6, 0, 0.2, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-paper text-ink-900 antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    @apply bg-gold-400 text-ink-950;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-gold-500;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 md:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-gold-600;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-8 bg-current;
+  }
+  .dark .eyebrow,
+  .eyebrow-light {
+    @apply text-gold-400;
+  }
+
+  .h-section {
+    @apply font-display text-[1.7rem] leading-[1.12] sm:text-3xl font-semibold tracking-tight text-balance md:text-5xl;
+  }
+
+  .card {
+    @apply rounded-(--radius-card) border border-ink-900/8 bg-white;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-ink-900/12 bg-white px-4 py-3.5 text-[15px] text-ink-900 transition-colors placeholder:text-ink-400 focus:border-gold-500 focus:ring-4 focus:ring-gold-500/15 focus:outline-none;
+  }
+  .dark .field {
+    @apply border-white/12 bg-white/5 text-white placeholder:text-white/35 focus:border-gold-400;
+  }
+
+  /* Сетка «импостов» — фирменный фон */
+  .mullions {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 120px 160px;
+  }
+  .mullions-dark {
+    background-image:
+      linear-gradient(to right, rgb(22 24 27 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(22 24 27 / 0.06) 1px, transparent 1px);
+    background-size: 120px 160px;
+  }
+
+  /* Появление при прокрутке без JS (где поддерживается scroll-driven animations) */
+  .reveal {
+    @apply motion-safe:animate-reveal;
+  }
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+
+  .prose-alux {
+    @apply text-[17px] leading-relaxed text-ink-700;
+  }
+  .prose-alux h2 {
+    @apply mt-10 mb-4 font-display text-2xl font-semibold text-ink-900;
+  }
+  .prose-alux h3 {
+    @apply mt-8 mb-3 text-xl font-bold text-ink-900;
+  }
+  .prose-alux p {
+    @apply my-4;
+  }
+  .prose-alux ul {
+    @apply my-4 list-none space-y-2 pl-0;
+  }
+  .prose-alux ul > li {
+    @apply relative pl-6;
+  }
+  .prose-alux ul > li::before {
+    content: "";
+    @apply absolute top-[0.7em] left-0 h-px w-3 bg-gold-500;
+  }
+  .prose-alux ol {
+    @apply my-4 list-decimal space-y-2 pl-6 marker:font-semibold marker:text-gold-600;
+  }
+  .prose-alux strong {
+    @apply font-semibold text-ink-900;
+  }
+  .prose-alux a {
+    @apply text-gold-700 underline decoration-gold-400 underline-offset-4 hover:text-gold-600;
+  }
+  .prose-alux table {
+    @apply my-6 w-full overflow-hidden rounded-xl border border-ink-900/10 text-left text-[15px];
+  }
+  .prose-alux th {
+    @apply bg-paper-2 px-4 py-3 font-semibold text-ink-900;
+  }
+  .prose-alux td {
+    @apply border-t border-ink-900/8 px-4 py-3;
+  }
+  .prose-alux blockquote {
+    @apply my-6 border-l-2 border-gold-500 pl-5 text-ink-900 italic;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold whitespace-nowrap transition-all duration-200 select-none disabled:pointer-events-none disabled:opacity-50;
+}
+
+@utility btn-gold {
+  @apply btn bg-gold-500 text-ink-950 shadow-[0_8px_30px_-8px_rgb(217_164_65/0.6)] hover:bg-gold-400 active:scale-[0.98];
+}
+
+@utility btn-dark {
+  @apply btn bg-ink-900 text-white hover:bg-ink-700 active:scale-[0.98];
+}
+
+@utility btn-ghost {
+  @apply btn border border-current/20 hover:border-current/50 hover:bg-current/5;
+}
+
+@utility btn-wa {
+  @apply btn bg-[#25d366] text-white hover:bg-[#1ebe5b] active:scale-[0.98];
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
